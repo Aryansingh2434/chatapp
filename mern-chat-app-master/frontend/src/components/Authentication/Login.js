@@ -9,15 +9,17 @@ import { useHistory } from "react-router-dom";
 import { ChatState } from "../../Context/ChatProvider";
 
 const Login = () => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false); // toggle password visibility
   const handleClick = () => setShow(!show);
-  const toast = useToast();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [loading, setLoading] = useState(false);
+
+  const toast = useToast(); // Chakra UI toast for feedback
+  const [email, setEmail] = useState(""); // initialized as empty string
+  const [password, setPassword] = useState(""); // initialized as empty string
+  const [loading, setLoading] = useState(false); // manage loading state
 
   const history = useHistory();
-  const { setUser } = ChatState();
+  const { setUser } = ChatState(); // global state management
+
 
   const submitHandler = async () => {
     setLoading(true);
@@ -70,17 +72,20 @@ const Login = () => {
     }
   };
 
-  return (
+   return (
     <VStack spacing="10px">
+      {/* Email input field */}
       <FormControl id="email" isRequired>
         <FormLabel>Email Address</FormLabel>
         <Input
           value={email}
           type="email"
-          placeholder="Enter Your Email Address"
+          placeholder="Enter your email address"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
+
+      {/* Password input field with show/hide */}
       <FormControl id="password" isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup size="md">
@@ -97,15 +102,19 @@ const Login = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
+
+      {/* Login Button */}
       <Button
         colorScheme="blue"
         width="100%"
-        style={{ marginTop: 15 }}
+        mt={4}
         onClick={submitHandler}
         isLoading={loading}
       >
         Login
       </Button>
+
+      {/* Guest Credentials Button */}
       <Button
         variant="solid"
         colorScheme="red"
