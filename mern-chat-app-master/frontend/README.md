@@ -90,3 +90,20 @@ npm start
 Make sure the backend server is running and accessible (you may need to set the proxy or CORS configs).
 🔑 Environment Variables
 
+Create a .env file in the root with:
+
+REACT_APP_BACKEND_URL=http://localhost:5000
+REACT_APP_SOCKET_SERVER=http://localhost:5000
+
+Adjust these as per your deployed backend.
+🛠️ Available Scripts
+
+    npm start — Runs the app in development mode
+
+    npm run build — Builds the app for production
+
+    npm test — Runs unit tests (if added)
+
+📷 Screenshots
+
+    Add some UI screenshots here if you have them
