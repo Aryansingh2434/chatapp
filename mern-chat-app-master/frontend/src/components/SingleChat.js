@@ -70,25 +70,41 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
-      socket.emit("stop typing", selectedChat._id);
-      try {
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
-        setNewMessage("");
-        const { data } = await axios.post(
-          "/api/message",
-          {
-            content: newMessage,
-            chatId: selectedChat,
-          },
-          config
-        );
+ const sendMessage = async (event) => {
+  if (event.key === "Enter" && newMessage.trim()) {
+    socket.emit("stop typing", selectedChat._id);
+
+    const messageToSend = newMessage;  // Save the message before clearing
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      setNewMessage(""); // Clear the input field (UI feedback)
+
+      const { data } = await axios.post(
+        "/api/message",
+        {
+          content: messageToSend,
+          chatId: selectedChat._id, // Ensure you're sending the chat ID string
+        },
+        config
+      );
+
+      // Optionally: handle the response like pushing message to message state
+      // setMessages([...messages, data]);
+
+    } catch (error) {
+      console.error("Message sending failed:", error);
+      // Optionally: show toast or alert
+    }
+  }
+};
+
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
