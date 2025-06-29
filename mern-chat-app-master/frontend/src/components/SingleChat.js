@@ -153,26 +153,34 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     });
   });
 
-  const typingHandler = (e) => {
-    setNewMessage(e.target.value);
+ const typingHandler = (e) => {
+  setNewMessage(e.target.value);
 
-    if (!socketConnected) return;
+  if (!socketConnected) return;
 
-    if (!typing) {
-      setTyping(true);
-      socket.emit("typing", selectedChat._id);
+  if (!typing) {
+    setTyping(true);
+    socket.emit("typing", selectedChat._id);
+  }
+
+  // update last typing time
+  lastTypingTime.current = new Date().getTime();
+
+  // Clear previous timeout (if any)
+  if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+  // Set a new timeout
+  typingTimeout.current = setTimeout(() => {
+    const timeNow = new Date().getTime();
+    const timeDiff = timeNow - lastTypingTime.current;
+
+    if (timeDiff >= 3000 && typing) {
+      socket.emit("stop typing", selectedChat._id);
+      setTyping(false);
     }
-    let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
-    setTimeout(() => {
-      var timeNow = new Date().getTime();
-      var timeDiff = timeNow - lastTypingTime;
-      if (timeDiff >= timerLength && typing) {
-        socket.emit("stop typing", selectedChat._id);
-        setTyping(false);
-      }
-    }, timerLength);
-  };
+  }, 3000);
+};
+
 
   return (
     <>
